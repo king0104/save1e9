@@ -14,12 +14,38 @@ public class UserController {
 
     private final UserRepository userRepository;
 
-    @PostMapping("/save")
-    public void save() {
+    @PostMapping("/save1")
+    public void save1() {
+        long startTime = System.currentTimeMillis();
+
+        for (int i = 0; i < 5000; i++) {
+            userRepository.save(new User(null, "yoon", 1));
+        }
+
+        long stopTime = System.currentTimeMillis();
+
+        long elapsedTime = stopTime - startTime;
+        System.out.println(elapsedTime);
+    }
+
+    @PostMapping("/save2")
+    public void save2() {
+        long startTime = System.currentTimeMillis();
+
+        userRepository.insertUser("lee",2);
+
+        long stopTime = System.currentTimeMillis();
+
+        long elapsedTime = stopTime - startTime;
+        System.out.println(elapsedTime);
+    }
+
+    @PostMapping("/save5")
+    public void save5() {
         long startTime = System.currentTimeMillis();
 
         for(int i=0;i<5000;i++) {
-            userRepository.save(new User(null, "yoon", 1));
+            userRepository.insertUser5();
         }
 
         long stopTime = System.currentTimeMillis();
