@@ -13,7 +13,6 @@ class Save1e9ApplicationTests {
 
     @Test
     void contextLoads() {
-        userRepository.insertUser("lee",1);
     }
 
 }

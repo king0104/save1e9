@@ -16,16 +16,19 @@ public class UserController {
 
     @PostMapping("/save1")
     public void save1() {
-        long startTime = System.currentTimeMillis();
 
-        for (int i = 0; i < 5000; i++) {
+        for (int i = 0; i < 1e8; i++) {
+            long startTime = System.currentTimeMillis();
+
             userRepository.save(new User(null, "yoon", 1));
+
+            long stopTime = System.currentTimeMillis();
+
+            long elapsedTime = stopTime - startTime;
+            System.out.println(elapsedTime);
         }
 
-        long stopTime = System.currentTimeMillis();
 
-        long elapsedTime = stopTime - startTime;
-        System.out.println(elapsedTime);
     }
 
     @PostMapping("/save2")
