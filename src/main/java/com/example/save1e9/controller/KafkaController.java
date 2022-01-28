@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/kafka")
 public class KafkaController {
 
-    private final Producers producers;
-
-    @GetMapping("/{message}")
-    public String sendMessage(@PathVariable("message") String message) {
-        producers.sendMessage("baeldung",message);
-
-        return message;
-    }
+//    private final Producers producers;
+//
+//    @GetMapping("/{message}")
+//    public String sendMessage(@PathVariable("message") String message) {
+//        producers.sendMessage("baeldung",message);
+//
+//        return message;
+//    }
 }

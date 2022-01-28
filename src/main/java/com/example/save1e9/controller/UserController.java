@@ -2,60 +2,83 @@ package com.example.save1e9.controller;
 
 import com.example.save1e9.entity.User;
 import com.example.save1e9.repository.UserRepository;
+import com.example.save1e9.service.Producers;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @RestController
-@RequiredArgsConstructor // final 필드 값을 파라미터로 하는 생성자 생성
+@RequiredArgsConstructor
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final Producers producers;
 
-    @PostMapping("/save1")
-    public void save1() {
+    ExecutorService executor = Executors.newFixedThreadPool(4);
 
-        for (int i = 0; i < 1e8; i++) {
-            long startTime = System.currentTimeMillis();
+    @GetMapping("/send")
+    public void sendMessage() {
 
-            userRepository.save(new User(null, "yoon", 1));
+        // 2. 3. worker 클래스(runnable) 만들기 by 람다식
+        Runnable worker = () -> {
+            try{
 
-            long stopTime = System.currentTimeMillis();
+                for (int i = 0; i < 1e2; i++) {
+                    long startTime = System.currentTimeMillis();
 
-            long elapsedTime = stopTime - startTime;
-            System.out.println(elapsedTime);
+                    // service 패키지로 빼기?
+                    User user = new User(null, "yoon", 1);
+                    producers.sendMessage("baeldung",user);
+
+                    long stopTime = System.currentTimeMillis();
+
+                    long elapsedTime = stopTime - startTime;
+                    System.out.println(elapsedTime);
+                }
+
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }
+        };
+
+        // 4. worker 클래스(runnable) submit
+        for (int i = 0; i < 4; i++) {
+            executor.submit(worker);
         }
 
-
     }
 
-    @PostMapping("/save2")
-    public void save2() {
-        long startTime = System.currentTimeMillis();
 
-        userRepository.insertUser("lee",2);
-
-        long stopTime = System.currentTimeMillis();
-
-        long elapsedTime = stopTime - startTime;
-        System.out.println(elapsedTime);
-    }
-
-    @PostMapping("/save5")
-    public void save5() {
-        long startTime = System.currentTimeMillis();
-
-        for(int i=0;i<5000;i++) {
-            userRepository.insertUser5();
-        }
-
-        long stopTime = System.currentTimeMillis();
-
-        long elapsedTime = stopTime - startTime;
-        System.out.println(elapsedTime);
-    }
 
 
 }
+
+//@AllArgsConstructor
+//class Worker implements Runnable {
+//
+//    private UserRepository userRepository;
+//
+//    public void run(){
+//        try{
+//
+//            for (int i = 0; i < 1e2; i++) {
+//                long startTime = System.currentTimeMillis();
+//
+//                userRepository.save(new User(null, "yoon", 1));
+//
+//                long stopTime = System.currentTimeMillis();
+//
+//                long elapsedTime = stopTime - startTime;
+//                System.out.println(elapsedTime);
+//            }
+//
+//        }
+//        catch(Exception e) {
+//            e.printStackTrace();
+//        }
+//    }
+//}
